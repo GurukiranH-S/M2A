@@ -1,7 +1,9 @@
 pipeline {
 agent any
+
 tools {
     maven 'Maven'
+    jdk 'JDK17'
 }
 
 stages {
@@ -13,39 +15,63 @@ stages {
         }
     }
 
-    stage('Build') {
+    stage('Clean') {
         steps {
-            sh 'mvn clean package'
+            sh 'mvn clean'
         }
     }
 
-    
+    stage('Compile') {
+        steps {
+            sh 'mvn compile'
+        }
+    }
 
     stage('Test') {
         steps {
             sh 'mvn test'
         }
+        post {
+            always {
+                junit 'target/surefire-reports/*.xml'
+            }
+        }
     }
 
+    stage('Package') {
+        steps {
+            sh 'mvn package'
+        }
+    }
+
+    stage('Show Artifact') {
+        steps {
+            sh 'ls -lh target/'
+        }
+    }
 
     stage('Run Application') {
         steps {
-            sh 'nohup java -jar target/M2A-1.0-SNAPSHOT.jar'
+            sh '''
+                echo "===== APPLICATION OUTPUT ====="
+                java -jar target/M2A-1.0-SNAPSHOT.jar
+                echo "===== APPLICATION COMPLETED ====="
+            '''
         }
     }
 }
 
 post {
     success {
-        echo 'Build, Test, and Packaging completed successfully!'
+        echo 'Build, Test and Run Successful!'
     }
 
     failure {
-        echo 'Build failed. Check console logs.'
+        echo 'Build Failed!'
     }
 
     always {
-        cleanWs()
+        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
     }
 }
 
