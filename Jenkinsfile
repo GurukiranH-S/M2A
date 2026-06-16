@@ -28,7 +28,7 @@ pipeline {
 
         stage('Run') {
             steps {
-                sh 'java -jar target/M2A-1.0-SNAPSHOT.jar'
+                sh 'exce:java -Dexce.mainClass="com.example.App"'
             }
         }
     }
