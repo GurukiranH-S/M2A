@@ -9,7 +9,7 @@ stages {
     stage('Checkout') {
         steps {
             git branch: 'main',
-                url: 'https://github.com/Gurukiran-H-S/myMavenApp.git'
+                url: 'https://github.com/GurukiranH-S/M2A.git'
         }
     }
 
