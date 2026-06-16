@@ -1,19 +1,28 @@
 package com.example;
-import org.apache.commons.io.FileUtils;
-import java.io.File;
-import java.io.IOException;
-import com.google.common.collect.ImmutableList;
-public class App {
-public static void main(String[] args) {
-ImmutableList<String> fruits = ImmutableList.of("Apple", "Banana", "Cherry");
-System.out.println(fruits);
-File sourceFile = new File("source.txt");
-File destFile = new File("destination.txt");
-try {
-FileUtils.copyFile(sourceFile, destFile);
-System.out.println("File copied successfully!");
-} catch (IOException e) {
-System.err.println("Error occurred while copying file: " + e.getMessage());
-}
-}
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+/**
+ * Hello world!
+ *
+ */
+public class App
+{
+    public static void main(String[] args)
+    {
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com/");
+        driver.manage().window().maximize();
+
+        driver.findElement(By.id("user-name"))
+              .sendKeys("standard_user");
+
+        driver.findElement(By.id("password"))
+              .sendKeys("secret_sauce");
+
+        driver.findElement(By.id("login-button"))
+              .click();
+    }
 }
