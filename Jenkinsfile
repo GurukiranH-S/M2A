@@ -1,47 +1,76 @@
 pipeline {
-    agent any  // Use any available agent
+agent any
 
-    tools {
-        maven 'Maven'  // Ensure this matches the name configured in Jenkins
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Gurukiran-H-S/myMavenApp.git'
-            }
-        }
+```
+tools {
+    maven 'Maven'
+}
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package'  // Run Maven build
-            }
-        }
+stages {
 
-        stage('Test') {
-            steps {
-                sh 'mvn test'  // Run unit tests
-            }
-        }
-
-        
-        
-       
-        stage('Run Application') {
-            steps {
-                // Start the JAR application
-                sh 'java -jar target/M2A-1.0-SNAPSHOT.jar'
-            }
-        }
-
-        
-    }
-
-    post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build failed!'
+    stage('Checkout') {
+        steps {
+            git branch: 'main',
+                url: 'https://github.com/Gurukiran-H-S/myMavenApp.git'
         }
     }
+
+    stage('Clean') {
+        steps {
+            sh 'mvn clean'
+        }
+    }
+
+    stage('Compile') {
+        steps {
+            sh 'mvn compile'
+        }
+    }
+
+    stage('Test') {
+        steps {
+            sh 'mvn test'
+        }
+        post {
+            always {
+                junit 'target/surefire-reports/*.xml'
+            }
+        }
+    }
+
+    stage('Package') {
+        steps {
+            sh 'mvn package'
+        }
+    }
+
+    stage('Archive Artifact') {
+        steps {
+            archiveArtifacts artifacts: 'target/*.jar',
+                             fingerprint: true
+        }
+    }
+
+    stage('Run Application') {
+        steps {
+            sh 'nohup java -jar target/M2A-1.0-SNAPSHOT.jar > app.log 2>&1 &'
+        }
+    }
+}
+
+post {
+    success {
+        echo 'Build, Test, and Packaging completed successfully!'
+    }
+
+    failure {
+        echo 'Build failed. Check console logs.'
+    }
+
+    always {
+        cleanWs()
+    }
+}
+```
+
 }
