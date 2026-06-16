@@ -13,19 +13,12 @@
 <version>3.8.1</version>
 <scope>test</scope>
 </dependency>
-<!--  Source: https://mvnrepository.com/artifact/com.google.guava/guava  -->
+<!-- Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 <dependency>
-<groupId>com.google.guava</groupId>
-<artifactId>guava</artifactId>
-<version>33.5.0-jre</version>
-<scope>compile</scope>
-</dependency>
-<!--  Source: https://mvnrepository.com/artifact/commons-io/commons-io  -->
-<dependency>
-<groupId>commons-io</groupId>
-<artifactId>commons-io</artifactId>
-<version>2.21.0</version>
-<scope>compile</scope>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>4.44.0</version>
+    <scope>compile</scope>
 </dependency>
 </dependencies>
 <!--  Build: Configuring plugins and build settings  -->
