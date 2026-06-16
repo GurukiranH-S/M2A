@@ -1,78 +1,45 @@
 pipeline {
-agent any
+    agent any
 
-tools {
-    maven 'Maven'
-    jdk 'JDK'
-}
-
-stages {
-
-    stage('Checkout') {
-        steps {
-            git branch: 'main',
-                url: 'https://github.com/GurukiranH-S/M2A.git'
-        }
+    tools {
+        maven 'Maven'
     }
 
-    stage('Clean') {
-        steps {
-            sh 'mvn clean'
-        }
-    }
+    stages {
 
-    stage('Compile') {
-        steps {
-            sh 'mvn compile'
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/GurukiranH-S/M2A.git'
+            }
         }
-    }
 
-    stage('Test') {
-        steps {
-            sh 'mvn test'
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
         }
-        post {
-            always {
-                junit 'target/surefire-reports/*.xml'
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                sh 'java -jar target/M2A-1.0-SNAPSHOT.jar'
             }
         }
     }
 
-    stage('Package') {
-        steps {
-            sh 'mvn package'
+    post {
+        success {
+            echo 'Build Successful'
+        }
+
+        failure {
+            echo 'Build Failed'
         }
     }
-
-    stage('Show Artifact') {
-        steps {
-            sh 'ls -lh target/'
-        }
-    }
-
-    stage('Run Application') {
-        steps {
-            sh '''
-                echo "===== APPLICATION OUTPUT ====="
-                java -jar target/M2A-1.0-SNAPSHOT.jar
-                echo "===== APPLICATION COMPLETED ====="
-            '''
-        }
-    }
-}
-
-post {
-    success {
-        echo 'Build, Test and Run Successful!'
-    }
-
-    failure {
-        echo 'Build Failed!'
-    }
-
-    always {
-        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-    }
-}
-
 }
