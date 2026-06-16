@@ -13,45 +13,24 @@ stages {
         }
     }
 
-    stage('Clean') {
+    stage('Build') {
         steps {
-            sh 'mvn clean'
+            sh 'mvn clean package'
         }
     }
 
-    stage('Compile') {
-        steps {
-            sh 'mvn compile'
-        }
-    }
+    
 
     stage('Test') {
         steps {
             sh 'mvn test'
         }
-        post {
-            always {
-                junit 'target/surefire-reports/*.xml'
-            }
-        }
     }
 
-    stage('Package') {
-        steps {
-            sh 'mvn package'
-        }
-    }
-
-    stage('Archive Artifact') {
-        steps {
-            archiveArtifacts artifacts: 'target/*.jar',
-                             fingerprint: true
-        }
-    }
 
     stage('Run Application') {
         steps {
-            sh 'nohup java -jar target/M2A-1.0-SNAPSHOT.jar > app.log 2>&1 &'
+            sh 'nohup java -jar target/M2A-1.0-SNAPSHOT.jar'
         }
     }
 }
